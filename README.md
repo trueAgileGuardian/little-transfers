@@ -1,25 +1,18 @@
-# Little Transfers
+# Little Transfers v2
 
-A phone-first savings transfer habit tracker.
+A phone-first transfer habit tracker.
 
-## Included goals
-- Bills — $900/check, checks 1 and 2 only
-- Car loan — $300/month
-- Insurance — $170/month
-- Phone — $60/month
-- House — $50/check
-- Family — $100/month minimum
-- Travel — $75/month
+## V2 changes
+- Separates mandatory **BILLS** (Bills, Car loan, Insurance, Phone) from discretionary **GOALS** (House, Family, Travel, Piggy Bank).
+- Adds **Piggy Bank** as a flexible future-spending savings bucket with no required target.
+- Adds a second **Spend vs Save** page.
+- Credit-card payments are entered as actual custom amounts per paycheck.
+- Spend vs Save compares credit-card payments against GOALS only; mandatory bills are excluded.
+- Replaces “planned baseline” wording with “left to transfer this month.”
+- Keeps Check 1 / Check 2 and optional Check 3 behavior.
+- Migrates existing v1 browser data automatically when opened on the same GitHub Pages URL.
 
-## How it works
-- Each month starts with Check 1 and Check 2.
-- Use **+ 3rd check** in months with an extra paycheck.
-- Monthly goals automatically show the remaining amount after earlier checks.
-- Use 👌🏽 Partial, 👍🏽 Full, 🙌🏽 Extra, or Skip.
-- Entries can be edited or deleted from Transfer history.
-- Data is stored only in the browser using localStorage.
+## Updating GitHub Pages
+Upload/replace `index.html`, `manifest.webmanifest`, `sw.js`, `icon-192.png`, `icon-512.png`, and `README.md` in the repository root. Keep the same GitHub Pages URL so the browser can retain and migrate the existing local data.
 
-## Put it on an iPhone Home Screen
-For the full app-like/offline experience, host this folder on an HTTPS website (GitHub Pages, Netlify, Cloudflare Pages, etc.). Then open the site in Safari and use **Share → Add to Home Screen**.
-
-Because this version stores data locally, Safari/site data removal will erase the tracker history. A later shared version for a spouse should use synced storage/accounts rather than localStorage.
+Data is still stored locally in the browser. Clearing Safari website data can erase it.

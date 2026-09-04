@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-title" content="Savings" />
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="apple-touch-icon" href="icon-192.png" />
-  <title>Savings Transfer Tracker</title>
+  <title>Little Transfers</title>
   <style>
     :root{
       --coral:#FFA69E;
@@ -94,6 +94,17 @@
     .sparkles{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:8}
     .spark{position:absolute;font-size:22px;animation:fall 1.5s ease-out forwards}
     @keyframes fall{0%{transform:translateY(-20px) rotate(0);opacity:0}15%{opacity:1}100%{transform:translateY(85vh) rotate(420deg);opacity:0}}
+
+    .category-head{grid-column:1/-1;display:flex;justify-content:space-between;align-items:end;padding:8px 4px 0;color:var(--indigo)}
+    .category-head b{display:block;font-size:.82rem;letter-spacing:.11em}.category-head div span,.category-head>span{font-size:.76rem;color:var(--muted)}
+    .goals-head{margin-top:8px}.flex-actions{grid-template-columns:1fr}.flex-actions .action{padding:11px}
+    .bottom-nav{position:fixed;z-index:20;left:50%;bottom:0;transform:translateX(-50%);width:min(720px,100%);display:grid;grid-template-columns:1fr 1fr;background:rgba(255,253,246,.94);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:8px 16px calc(8px + env(safe-area-inset-bottom));box-shadow:0 -8px 28px rgba(79,81,125,.08)}
+    .bottom-nav button{border:0;background:transparent;border-radius:14px;padding:7px;color:var(--muted);font-weight:850}.bottom-nav button span{display:block;font-size:.72rem;margin-top:2px}.bottom-nav .nav-active{background:#e9f3f6;color:var(--indigo)}
+    .compare-card{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:var(--shadow)}
+    .scale-labels{display:grid;grid-template-columns:1fr 1fr;text-align:center;gap:14px}.scale-labels div{background:#fff;border:1px solid var(--line);border-radius:18px;padding:12px}.scale-labels span{font-size:1.5rem;display:block}.scale-labels b{font-size:1.35rem;color:var(--indigo);display:block;margin:3px}.scale-labels small{color:var(--muted)}
+    .scale-wrap{height:112px;display:flex;align-items:center;justify-content:center;overflow:hidden}.scale-beam{position:relative;width:78%;height:8px;background:var(--plum);border-radius:99px;transform:rotate(0deg);transition:transform .45s ease}.pan{position:absolute;top:-28px;font-size:1.7rem}.pan.left{left:-15px}.pan.right{right:-15px}.fulcrum{position:absolute;left:50%;top:10px;transform:translateX(-50%);font-size:2.1rem;color:var(--indigo)}
+    .compare-message{text-align:center;font-weight:850;color:var(--plum);padding:4px 8px 0;line-height:1.4}.cc-card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:16px;margin-top:14px}.cc-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.cc-actions button{border:0;border-radius:14px;padding:11px 6px;background:var(--blue);color:var(--ink);font-weight:850}.cc-actions button.done{background:#e6d8e4}.compare-page[hidden]{display:none}
+
     @media (min-width:620px){.grid{grid-template-columns:1fr 1fr}.goal{min-height:195px}.app{padding-top:28px}}
   </style>
 </head>
@@ -124,13 +135,28 @@
     <div class="checks" id="checkTabs"></div>
     <div class="bonus" id="bonus"><strong>Third paycheck bonus 🙌🏽</strong><br><span>Regular monthly bills are already covered. This is a great check for an extra savings transfer.</span></div>
 
-    <div class="section-title"><h3>Your goals</h3><span id="checkLabel"></span></div>
+    <div class="section-title"><h3>Transfers</h3><span id="checkLabel"></span></div>
     <section class="grid" id="goalGrid"></section>
 
     <div class="section-title" style="margin-top:22px"><h3>Transfer history</h3><span>tap to fix mistakes</span></div>
     <section class="history-card" id="history"></section>
     <div class="bottom-note">Saved only on this device. No bank login, no account balance tracking, no cloud sync.</div>
   </main>
+
+  <main class="app compare-page" id="comparePage" hidden>
+    <div class="topbar"><div class="brand"><h1>Spend vs. Save ⚖️</h1><p>Credit card payments vs. GOALS only.</p></div></div>
+    <div class="month-nav"><button id="prevMonth2">‹</button><div id="monthLabel2"></div><button id="nextMonth2">›</button></div>
+    <section class="compare-card">
+      <div class="scale-labels"><div><span>💳</span><b id="cardTotal">$0</b><small>credit card paid</small></div><div><span>💰</span><b id="savingsTotal">$0</b><small>saved to goals</small></div></div>
+      <div class="scale-wrap"><div class="scale-beam" id="scaleBeam"><span class="pan left">💳</span><span class="fulcrum">▲</span><span class="pan right">💰</span></div></div>
+      <div class="compare-message" id="compareMessage"></div>
+    </section>
+    <section class="cc-card"><div><div class="goal-name">💳 Credit card paid?</div><div class="goal-type">Enter the actual payment for each check — no default.</div></div><div class="cc-actions" id="ccActions"></div></section>
+    <div class="section-title" style="margin-top:22px"><h3>Card payment history</h3><span>edit or delete</span></div>
+    <section class="history-card" id="ccHistory"></section>
+    <div class="bottom-note">Bills are intentionally excluded from “saved.” Only House, Family, Travel, and Piggy Bank count on the savings side.</div>
+  </main>
+  <nav class="bottom-nav"><button data-page="home" class="nav-active">🌱<span>Transfers</span></button><button data-page="compare">⚖️<span>Spend vs Save</span></button></nav>
 
   <dialog id="amountDialog">
     <form method="dialog" class="modal" id="amountForm">
@@ -146,13 +172,14 @@
 
 <script>
 const GOALS = [
-  {id:'bills', name:'Bills', type:'per_check', amount:900, regularOnly:true, emoji:'🧾'},
-  {id:'car', name:'Car loan', type:'monthly', amount:300, emoji:'🚗'},
-  {id:'insurance', name:'Insurance', type:'monthly', amount:170, emoji:'🛡️'},
-  {id:'phone', name:'Phone', type:'monthly', amount:60, emoji:'📱'},
-  {id:'house', name:'House', type:'per_check', amount:50, emoji:'🏡'},
-  {id:'family', name:'Family', type:'monthly', amount:100, minimum:true, emoji:'🫶🏽'},
-  {id:'travel', name:'Travel', type:'monthly', amount:75, emoji:'✈️'}
+  {id:'bills', name:'Bills', category:'bill', type:'per_check', amount:900, regularOnly:true, emoji:'🧾'},
+  {id:'car', name:'Car loan', category:'bill', type:'monthly', amount:300, emoji:'🚗'},
+  {id:'insurance', name:'Insurance', category:'bill', type:'monthly', amount:170, emoji:'🛡️'},
+  {id:'phone', name:'Phone', category:'bill', type:'monthly', amount:60, emoji:'📱'},
+  {id:'house', name:'House', category:'goal', type:'per_check', amount:50, emoji:'🏡'},
+  {id:'family', name:'Family', category:'goal', type:'monthly', amount:100, minimum:true, emoji:'🫶🏽'},
+  {id:'travel', name:'Travel', category:'goal', type:'monthly', amount:75, emoji:'✈️'},
+  {id:'piggy', name:'Piggy Bank', category:'goal', type:'flexible', amount:0, emoji:'🐷'}
 ];
 const BASE_MONTHLY_TARGET = 1800 + 300 + 170 + 60 + 100 + 100 + 75; // two normal checks
 const $ = s => document.querySelector(s);
@@ -160,11 +187,20 @@ let cursor = new Date(); cursor.setDate(1);
 let activeCheck = 1;
 let pending = null;
 let deleteId = null;
-const storeKey='littleTransfers.v1';
-let db = JSON.parse(localStorage.getItem(storeKey)||'{"months":{}}');
+const storeKey='littleTransfers.v2';
+let db;
+try {
+  db=JSON.parse(localStorage.getItem(storeKey)||'null');
+  if(!db){
+    const old=JSON.parse(localStorage.getItem('littleTransfers.v1')||'null');
+    db=old||{months:{}};
+    localStorage.setItem(storeKey,JSON.stringify(db));
+  }
+} catch { db={months:{}}; }
+
 
 function monthKey(d=cursor){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`}
-function mdata(){const k=monthKey(); if(!db.months[k]) db.months[k]={third:false,entries:[]}; return db.months[k]}
+function mdata(){const k=monthKey(); if(!db.months[k]) db.months[k]={third:false,entries:[],cardPayments:[]}; if(!db.months[k].cardPayments) db.months[k].cardPayments=[]; return db.months[k]}
 function save(){localStorage.setItem(storeKey,JSON.stringify(db))}
 function money(n){return new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:n%1?2:0}).format(n)}
 function goal(id){return GOALS.find(g=>g.id===id)}
@@ -176,6 +212,7 @@ function statusFor(id,c){const e=mdata().entries.filter(e=>e.goalId===id&&e.chec
 function expectedFor(g,c){
   if(g.regularOnly && c===3) return 0;
   if(g.type==='per_check') return g.amount;
+  if(g.type==='flexible') return 0;
   const remaining=Math.max(0,g.amount-totalGoal(g.id));
   return remaining;
 }
@@ -183,6 +220,7 @@ function checksCount(){return mdata().third?3:2}
 function monthTarget(){return BASE_MONTHLY_TARGET + (mdata().third ? 50 : 0)}
 function currentMonthTotal(){return mdata().entries.reduce((s,e)=>s+e.amount,0)}
 function isGoalCompleteForCheck(g,c){
+  if(g.type==='flexible') return true;
   if(g.regularOnly&&c===3) return true;
   if(g.type==='monthly') return totalGoal(g.id)>=g.amount;
   return goalCheckTotal(g.id,c)>=g.amount || statusFor(g.id,c)==='skip';
@@ -192,7 +230,7 @@ function render(){
   $('#monthLabel').textContent=cursor.toLocaleDateString(undefined,{month:'long',year:'numeric'});
   const total=currentMonthTotal(), target=monthTarget();
   $('#monthTotal').textContent=money(total);
-  $('#summaryText').textContent= total===0 ? 'No transfers logged yet.' : total>=target ? `${money(total-target)} above the planned baseline 🙌🏽` : `${money(Math.max(0,target-total))} to your planned baseline`;
+  $('#summaryText').textContent= total===0 ? 'No transfers logged yet.' : total>=target ? `${money(total-target)} above your planned transfers 🙌🏽` : `${money(Math.max(0,target-total))} left to transfer this month`;
   $('#monthProgress').style.width=Math.min(100,target?total/target*100:0)+'%';
   const tabs=[];
   for(let i=1;i<=checksCount();i++) tabs.push(`<button class="check-tab ${activeCheck===i?'active':''} ${checkComplete(i)?'done':''}" data-check="${i}">Check ${i}</button>`);
@@ -204,32 +242,38 @@ function render(){
   $('#checkLabel').textContent=`Check ${activeCheck}`;
   renderGoals(); renderHistory();
 }
-function renderGoals(){
-  $('#goalGrid').innerHTML=GOALS.map(g=>{
+function goalCard(g){
     const monthTotal=totalGoal(g.id), checkTotal=goalCheckTotal(g.id,activeCheck), expected=expectedFor(g,activeCheck), status=statusFor(g.id,activeCheck);
     const complete=isGoalCompleteForCheck(g,activeCheck);
-    let pct=g.type==='monthly'?Math.min(100,monthTotal/g.amount*100):Math.min(100,checkTotal/g.amount*100);
-    let typeText=g.type==='monthly'?`${money(g.amount)}/month${g.minimum?' minimum':''}`:`${money(g.amount)}/check`;
+    let pct=g.type==='monthly'?Math.min(100,monthTotal/g.amount*100):g.type==='per_check'?Math.min(100,checkTotal/g.amount*100):Math.min(100,monthTotal?100:0);
+    let typeText=g.type==='monthly'?`${money(g.amount)}/month${g.minimum?' minimum':''}`:g.type==='per_check'?`${money(g.amount)}/check`:'flexible · no amount due';
     let amountMain, amountSub;
-    if(g.regularOnly&&activeCheck===3){amountMain='Covered ✓';amountSub='no Check 3 transfer needed'}
+    if(g.type==='flexible'){amountMain=monthTotal?money(monthTotal):'Any amount';amountSub=monthTotal?'saved this month':'save ahead for future fun'}
+    else if(g.regularOnly&&activeCheck===3){amountMain='Covered ✓';amountSub='no Check 3 transfer needed'}
     else if(g.type==='monthly'){
       const rem=Math.max(0,g.amount-monthTotal); amountMain=rem?`${money(rem)} left`:'Complete ✓'; amountSub=`${money(monthTotal)} this month`;
     } else { amountMain=checkTotal?money(checkTotal):money(g.amount); amountSub=checkTotal?`${money(Math.max(0,g.amount-checkTotal))} left this check`:'planned this check'; }
-    let line='Ready when you are.';
+    let line=g.type==='flexible'?'Give yourself credit for saving before spending.':'Ready when you are.';
     if(status==='skip') line='Skipped for this check.';
     else if(checkTotal>0) line=`Logged ${money(checkTotal)} on Check ${activeCheck}.`;
-    else if(complete) line='Monthly target already covered.';
+    else if(complete && g.type!=='flexible') line='Monthly target already covered.';
     const disabled=(g.regularOnly&&activeCheck===3)||((g.type==='monthly')&&expected===0);
-    return `<article class="goal ${complete?'card-complete':''}">
+    const flex=g.type==='flexible';
+    return `<article class="goal ${complete&&!flex?'card-complete':''}">
       <div class="goal-head"><div><div class="goal-name">${g.emoji} ${g.name}</div><div class="goal-type">${typeText}</div></div><div class="goal-amount">${amountMain}<small>${amountSub}</small></div></div>
       <div class="goal-progress"><div style="width:${pct}%"></div></div><div class="status-line">${line}</div>
-      <div class="actions">
+      <div class="actions ${flex?'flex-actions':''}">
+        ${flex?`<button class="action extra" data-act="extra" data-goal="${g.id}">🙌🏽 Add savings</button>`:`
         <button class="action partial" ${disabled?'disabled':''} data-act="partial" data-goal="${g.id}">👌🏽 Partial</button>
         <button class="action full" ${disabled?'disabled':''} data-act="full" data-goal="${g.id}">👍🏽 Full</button>
         <button class="action extra" data-act="extra" data-goal="${g.id}">🙌🏽 Extra</button>
-        <button class="action skip" ${disabled?'disabled':''} data-act="skip" data-goal="${g.id}">Skip</button>
-      </div></article>`
-  }).join('');
+        <button class="action skip" ${disabled?'disabled':''} data-act="skip" data-goal="${g.id}">Skip</button>`}
+      </div></article>`;
+}
+function renderGoals(){
+  const bills=GOALS.filter(g=>g.category==='bill');
+  const goals=GOALS.filter(g=>g.category==='goal');
+  $('#goalGrid').innerHTML=`<div class="category-head"><div><b>BILLS</b><span>mandatory transfers</span></div><span>must pay</span></div>${bills.map(goalCard).join('')}<div class="category-head goals-head"><div><b>GOALS</b><span>future-you money</span></div><span>save what you can ✨</span></div>${goals.map(goalCard).join('')}`;
   $('#goalGrid').querySelectorAll('[data-act]').forEach(b=>b.onclick=()=>handleAction(b.dataset.goal,b.dataset.act));
 }
 function handleAction(goalId,act){
@@ -254,7 +298,11 @@ $('#amountForm').addEventListener('submit',e=>{
   const amount=parseFloat($('#amountInput').value);
   if(!Number.isFinite(amount)||amount<=0){$('#amountInput').focus();return}
   $('#amountDialog').close();
-  if(pending.editId){
+  if(pending.card){
+    if(pending.editId){const ent=mdata().cardPayments.find(e=>e.id===pending.editId);if(ent)ent.amount=amount;}
+    else mdata().cardPayments.push({id:crypto.randomUUID?crypto.randomUUID():String(Date.now()+Math.random()),check:pending.check,amount,createdAt:new Date().toISOString()});
+    save();renderCompare();toast(pending.editId?'Card payment updated':'Card payment logged 💳');
+  } else if(pending.editId){
     const ent=mdata().entries.find(e=>e.id===pending.editId); if(ent){ent.amount=amount;ent.status=pending.act==='extra'?'extra':pending.act||ent.status;save();render();toast('Transfer updated')}
   } else addEntry(pending.goalId,amount,pending.act);
   pending=null;
@@ -272,9 +320,35 @@ $('#cancelDelete').onclick=()=>$('#confirmDialog').close();
 $('#confirmDelete').onclick=()=>{mdata().entries=mdata().entries.filter(e=>e.id!==deleteId);save();$('#confirmDialog').close();render();toast('Transfer deleted')};
 $('#prevMonth').onclick=()=>{cursor.setMonth(cursor.getMonth()-1);activeCheck=1;render()};
 $('#nextMonth').onclick=()=>{cursor.setMonth(cursor.getMonth()+1);activeCheck=1;render()};
-$('#resetBtn').onclick=()=>{if(confirm(`Clear all saved transfers for ${cursor.toLocaleDateString(undefined,{month:'long',year:'numeric'})}?`)){db.months[monthKey()]={third:false,entries:[]};save();activeCheck=1;render();toast('Month cleared')}};
+$('#resetBtn').onclick=()=>{if(confirm(`Clear all saved transfers for ${cursor.toLocaleDateString(undefined,{month:'long',year:'numeric'})}?`)){db.months[monthKey()]={third:false,entries:[],cardPayments:[]};save();activeCheck=1;render();toast('Month cleared')}};
 function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1700)}
 function celebrate(){toast('Check complete — nice work! 🎉');const s=$('#sparkles');const chars=['✨','💜','🌱','🎉','🙌🏽'];for(let i=0;i<18;i++){const n=document.createElement('span');n.className='spark';n.textContent=chars[i%chars.length];n.style.left=Math.random()*100+'vw';n.style.top=(-10-Math.random()*20)+'px';n.style.animationDelay=(Math.random()*.35)+'s';s.appendChild(n);setTimeout(()=>n.remove(),2200)}}
+
+function goalSavingsTotal(){return mdata().entries.filter(e=>goal(e.goalId)?.category==='goal').reduce((s,e)=>s+e.amount,0)}
+function cardPaidTotal(){return mdata().cardPayments.reduce((s,e)=>s+e.amount,0)}
+function renderCompare(){
+  $('#monthLabel2').textContent=cursor.toLocaleDateString(undefined,{month:'long',year:'numeric'});
+  const card=cardPaidTotal(), saved=goalSavingsTotal(), diff=saved-card;
+  $('#cardTotal').textContent=money(card); $('#savingsTotal').textContent=money(saved);
+  const denom=Math.max(card,saved,1), tilt=Math.max(-10,Math.min(10,(card-saved)/denom*10));
+  $('#scaleBeam').style.transform=`rotate(${tilt}deg)`;
+  $('#compareMessage').textContent=card===0&&saved===0?'Start logging and watch the scale move ✨':diff>0?`You’ve saved ${money(diff)} more than you’ve paid toward your card this month 🙌🏽`:diff<0?`${money(-diff)} more toward GOALS would tip the scale toward savings 🌱`:'Perfect balance — saved and card paid are even ⚖️';
+  $('#ccActions').innerHTML=Array.from({length:checksCount()},(_,i)=>{const c=i+1, tot=mdata().cardPayments.filter(e=>e.check===c).reduce((s,e)=>s+e.amount,0);return `<button data-cc="${c}" class="${tot?'done':''}">Check ${c}${tot?` · ${money(tot)}`:''}</button>`}).join('');
+  $('#ccActions').querySelectorAll('[data-cc]').forEach(b=>b.onclick=()=>openCardPayment(+b.dataset.cc));
+  renderCcHistory();
+}
+function openCardPayment(check){pending={card:true,check,editId:null};$('#modalTitle').textContent=`Credit card · Check ${check}`;$('#modalHint').textContent='Enter the actual amount you paid on your credit card.';$('#amountInput').value='';$('#amountDialog').showModal();setTimeout(()=>$('#amountInput').focus(),50)}
+function renderCcHistory(){
+ const es=[...mdata().cardPayments].sort((a,b)=>b.check-a.check||b.createdAt.localeCompare(a.createdAt));
+ $('#ccHistory').innerHTML=es.length?es.map(e=>`<div class="history-row"><div class="history-main"><strong>💳 ${money(e.amount)}</strong><small>Check ${e.check}</small></div><div class="history-actions"><button class="tiny" data-ccedit="${e.id}">Edit</button><button class="tiny" data-ccdel="${e.id}">Delete</button></div></div>`).join(''):'<div class="empty">No credit card payments logged this month.</div>';
+ $('#ccHistory').querySelectorAll('[data-ccedit]').forEach(b=>b.onclick=()=>{const e=mdata().cardPayments.find(x=>x.id===b.dataset.ccedit);pending={card:true,check:e.check,editId:e.id};$('#modalTitle').textContent=`Edit card payment · Check ${e.check}`;$('#modalHint').textContent='Update the actual amount paid.';$('#amountInput').value=e.amount;$('#amountDialog').showModal()});
+ $('#ccHistory').querySelectorAll('[data-ccdel]').forEach(b=>b.onclick=()=>{if(confirm('Delete this credit card payment?')){mdata().cardPayments=mdata().cardPayments.filter(e=>e.id!==b.dataset.ccdel);save();renderCompare();toast('Card payment deleted')}});
+}
+function setPage(page){const home=page==='home';document.querySelector('main.app:not(.compare-page)').hidden=!home;$('#comparePage').hidden=home;document.querySelectorAll('.bottom-nav button').forEach(b=>b.classList.toggle('nav-active',b.dataset.page===page));if(home)render();else renderCompare();window.scrollTo(0,0)}
+document.querySelectorAll('.bottom-nav button').forEach(b=>b.onclick=()=>setPage(b.dataset.page));
+$('#prevMonth2').onclick=()=>{cursor.setMonth(cursor.getMonth()-1);activeCheck=1;renderCompare()};
+$('#nextMonth2').onclick=()=>{cursor.setMonth(cursor.getMonth()+1);activeCheck=1;renderCompare()};
+
 if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
 render();
 </script>
