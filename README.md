@@ -1,6 +1,13 @@
-# Little Transfers v3.2
+# Little Transfers v3.2.1
 
 A local-first, phone-friendly PWA for tracking manual transfers, savings habits, delayed gratification, and current-income spending.
+
+## v3.2.1 — Transfer History Edit Fix
+- Restored **Edit** controls for ordinary Bill and Goal transfer-history entries that were accidentally dropped in the v3.2 combined-history refactor.
+- Transfer edits can update the **amount** and **paycheck/check number**.
+- Piggy Bank transfer edits can also update the optional **“intended for”** note.
+- Credit-card payment edit/delete behavior remains unchanged.
+- No data-model changes; existing v3.x local data carries forward.
 
 ## v3.2 — Insights & Workflow
 
@@ -67,7 +74,7 @@ New order:
 - Piggy withdrawals are a funding source: they reduce the portion of card spending treated as current-income spending rather than counting as new savings again.
 
 ## Install / update on GitHub Pages
-Upload the **contents** of this folder to the repository root and replace the old files. Be sure to replace `sw.js` so the cache updates to v3.2. Keep the same GitHub Pages URL to preserve browser-local data.
+Upload the **contents** of this folder to the repository root and replace the old files. Be sure to replace `sw.js` so the cache updates to v3.2.1. Keep the same GitHub Pages URL to preserve browser-local data.
 
 ## Data
 All data remains in browser `localStorage` under the existing v3 data store, so v3.1.x data carries forward. Export a backup from Setup before clearing Safari website data or moving devices.
