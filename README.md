@@ -1,4 +1,4 @@
-# Little Transfers v3.1
+# Little Transfers v3.1.1
 
 A local-first, phone-friendly PWA for tracking manual transfers, savings habits, and current-income spending.
 
@@ -24,6 +24,13 @@ A local-first, phone-friendly PWA for tracking manual transfers, savings habits,
 - Dark styling across profile selection, dashboard, goals, Piggy Bank, Spend vs Save, setup, and peek mode.
 - Theme toggle in profile setup.
 
+
+## v3.1.1 — Profile Navigation Polish
+- Replaced the single **Profile** button in the dashboard header with two dedicated actions.
+- **👀 Peek** opens the other profile directly in full read-only mode.
+- **Switch** opens the profile picker and changes the active editable profile.
+- Keeps the existing read-only protection so neither person can alter the other profile’s logs or setup while peeking.
+
 ## Existing v2.1 behavior retained
 - Piggy Bank has a planned target of $0 and never reduces “left to transfer this month.”
 - Optional “intended for” notes group across months as delayed-gratification history.
@@ -31,7 +38,7 @@ A local-first, phone-friendly PWA for tracking manual transfers, savings habits,
 - Spend vs Save compares current-income card spending (`card paid - Piggy-funded spending`) against new GOAL contributions; BILLS are excluded.
 
 ## Install / update on GitHub Pages
-Upload the contents of this folder to the repository root, replacing the old files. Be sure to replace `sw.js` so the cache updates to v3.1. Keep the same GitHub Pages URL to preserve browser-local data.
+Upload the contents of this folder to the repository root, replacing the old files. Be sure to replace `sw.js` so the cache updates to v3.1.1. Keep the same GitHub Pages URL to preserve browser-local data.
 
 ## Data
 All data remains in browser `localStorage`. Export a backup from Setup before clearing Safari website data or moving devices.
