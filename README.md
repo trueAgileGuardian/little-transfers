@@ -1,6 +1,41 @@
-# Little Transfers v3.1.2
+# Little Transfers v3.2
 
-A local-first, phone-friendly PWA for tracking manual transfers, savings habits, and current-income spending.
+A local-first, phone-friendly PWA for tracking manual transfers, savings habits, delayed gratification, and current-income spending.
+
+## v3.2 — Insights & Workflow
+
+### New Insights page
+- Replaces the old **Spend vs Save** tab with a broader **Insights** page focused on the current month.
+- Keeps the existing Spend vs Save scale and current-income calculation: `credit card paid - Piggy-funded spending` versus new GOAL savings.
+- Adds a first-person monthly review in a speech bubble from the active profile emoji/avatar (or initial if no emoji).
+- Adds up to **3 habit insights** at a time:
+  - at least one positive observation,
+  - no more than one neutral **“Consider…”** reminder,
+  - no shaming or grading when spending is higher.
+- Looks for opportunities to reinforce useful habits such as saving consistently, fully funding goals, making extra contributions, delaying gratification, planning purchases ahead, using previously saved Piggy money, and saving more than current-income spending when it happens.
+- Adds a GOAL-attention pie chart showing the share of this month’s GOAL contributions by category rather than emphasizing running totals.
+- Piggy Bank interpretation now calls out both money **saved ahead this month** and spending **funded from prior Piggy savings**.
+- Streaks are intentionally deferred until there is more history to make them meaningful.
+
+### Transfers workflow
+- **Credit card paid?** moves from Spend vs Save onto the Transfers page.
+- Placement is now: **BILLS → GOALS → CREDIT CARD PAID? → TRANSFER HISTORY**.
+- Supports multiple credit-card payments in the same month.
+- Every credit-card payment is associated with **Check 1, Check 2, or Check 3**.
+- Credit-card payments now appear directly in Transfer History alongside transfer activity.
+- Card-payment history entries can be edited or deleted.
+
+### Goal ordering
+- Added per-profile goal ordering in Setup.
+- BILLS can be reordered within BILLS and GOALS within GOALS using reliable mobile-friendly **↑ / ↓** controls.
+- The selected order is used on Transfers and where goal order appears elsewhere, including the Insights pie legend.
+
+### Bottom navigation
+New order:
+1. **Insights**
+2. **Transfers**
+3. **Piggy Bank**
+4. **Setup**
 
 ## v3.0 — Profiles & Custom Setup
 - Multi-profile support for Rachel and Matthew.
@@ -11,39 +46,28 @@ A local-first, phone-friendly PWA for tracking manual transfers, savings habits,
 - Per-paycheck, per-month, and flexible target cadences.
 - Optional third-paycheck contribution behavior for per-check goals.
 - Goal emoji modes: Auto, Custom, or None.
-- Manage Goals screen with forward-only target edits; historical entries retain goal snapshots.
-- Separate contribution, Spend vs Save, card-payment, and Piggy Bank data per profile.
+- Separate contribution, card-payment, Spend/Save, and Piggy Bank data per profile.
 - Piggy Bank can be toggled off per profile.
 - Import/export of all local app data.
 - Automatic migration of existing `littleTransfers.v2` data into Rachel's profile.
-- Check 1, Check 2, and optional Check 3 remain universal.
 
 ## v3.1 — Dark Mode
 - Full dark palette based on the original Little Transfers colors.
 - Deep indigo/navy backgrounds, cream text, coral/aqua/plum accents.
-- Dark styling across profile selection, dashboard, goals, Piggy Bank, Spend vs Save, setup, and peek mode.
-- Theme toggle in profile setup.
+- Theme toggle in Setup.
 
+## v3.1.1–v3.1.2 — Profile Navigation Polish
+- Replaced the ambiguous Profile control with **👀 Peek** and **Switch**.
+- In read-only Peek mode, **👀 Peek** becomes **↩ Return** for a direct return to the active editable profile.
 
-## v3.1.2 — Profile Navigation Polish
-- Replaced the single **Profile** button in the dashboard header with two dedicated actions.
-- **👀 Peek** opens the other profile directly in full read-only mode.
-- **Switch** opens the profile picker and changes the active editable profile.
-- Keeps the existing read-only protection so neither person can alter the other profile’s logs or setup while peeking.
-
-## Existing v2.1 behavior retained
+## Existing Piggy Bank behavior retained
 - Piggy Bank has a planned target of $0 and never reduces “left to transfer this month.”
 - Optional “intended for” notes group across months as delayed-gratification history.
 - Piggy withdrawals reduce the Piggy balance without erasing historical saving credit.
-- Spend vs Save compares current-income card spending (`card paid - Piggy-funded spending`) against new GOAL contributions; BILLS are excluded.
+- Piggy withdrawals are a funding source: they reduce the portion of card spending treated as current-income spending rather than counting as new savings again.
 
 ## Install / update on GitHub Pages
-Upload the contents of this folder to the repository root, replacing the old files. Be sure to replace `sw.js` so the cache updates to v3.1.2. Keep the same GitHub Pages URL to preserve browser-local data.
+Upload the **contents** of this folder to the repository root and replace the old files. Be sure to replace `sw.js` so the cache updates to v3.2. Keep the same GitHub Pages URL to preserve browser-local data.
 
 ## Data
-All data remains in browser `localStorage`. Export a backup from Setup before clearing Safari website data or moving devices.
-
-
-### v3.1.2 — Peek Return Fix
-- In read-only Peek mode, the **👀 Peek** header button becomes **↩ Return**.
-- **Return** goes directly back to the active editable profile without opening the profile switcher.
+All data remains in browser `localStorage` under the existing v3 data store, so v3.1.x data carries forward. Export a backup from Setup before clearing Safari website data or moving devices.
