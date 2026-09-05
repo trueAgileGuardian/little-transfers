@@ -1,4 +1,4 @@
-# Little Transfers v3.1.1
+# Little Transfers v3.1.2
 
 A local-first, phone-friendly PWA for tracking manual transfers, savings habits, and current-income spending.
 
@@ -25,7 +25,7 @@ A local-first, phone-friendly PWA for tracking manual transfers, savings habits,
 - Theme toggle in profile setup.
 
 
-## v3.1.1 — Profile Navigation Polish
+## v3.1.2 — Profile Navigation Polish
 - Replaced the single **Profile** button in the dashboard header with two dedicated actions.
 - **👀 Peek** opens the other profile directly in full read-only mode.
 - **Switch** opens the profile picker and changes the active editable profile.
@@ -38,7 +38,12 @@ A local-first, phone-friendly PWA for tracking manual transfers, savings habits,
 - Spend vs Save compares current-income card spending (`card paid - Piggy-funded spending`) against new GOAL contributions; BILLS are excluded.
 
 ## Install / update on GitHub Pages
-Upload the contents of this folder to the repository root, replacing the old files. Be sure to replace `sw.js` so the cache updates to v3.1.1. Keep the same GitHub Pages URL to preserve browser-local data.
+Upload the contents of this folder to the repository root, replacing the old files. Be sure to replace `sw.js` so the cache updates to v3.1.2. Keep the same GitHub Pages URL to preserve browser-local data.
 
 ## Data
 All data remains in browser `localStorage`. Export a backup from Setup before clearing Safari website data or moving devices.
+
+
+### v3.1.2 — Peek Return Fix
+- In read-only Peek mode, the **👀 Peek** header button becomes **↩ Return**.
+- **Return** goes directly back to the active editable profile without opening the profile switcher.
