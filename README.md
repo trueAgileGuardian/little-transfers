@@ -1,16 +1,37 @@
-# Little Transfers v2.1
+# Little Transfers v3.1
 
-A phone-first local PWA for tracking manual transfers, mandatory bills, savings goals, credit-card payments, and delayed-gratification Piggy Bank savings.
+A local-first, phone-friendly PWA for tracking manual transfers, savings habits, and current-income spending.
 
-## v2.1 highlights
-- Piggy Bank has a planned target of $0, so its contributions never reduce “left to transfer this month” or advance the planned-transfer progress bar.
-- Optional “intended for” labels on Piggy Bank contributions group across months while the money remains one flexible balance.
-- Piggy Bank spending/withdrawals reduce the available Piggy balance without erasing historical savings credit.
-- Spend vs Save treats Piggy withdrawals as a funding source: card paid minus Piggy-funded spending = current-income spending, compared against new GOAL contributions.
-- BILLS remain excluded from the Spend vs Save comparison.
+## v3.0 — Profiles & Custom Setup
+- Multi-profile support for Rachel and Matthew.
+- Profile picker with user-chosen emoji/avatar and remembered last profile.
+- Full read-only 👀 peek into the other profile.
+- First-time setup wizard; Matthew can start blank or copy Rachel's setup.
+- Configurable Bills, Goals, and flexible/no-target goals.
+- Per-paycheck, per-month, and flexible target cadences.
+- Optional third-paycheck contribution behavior for per-check goals.
+- Goal emoji modes: Auto, Custom, or None.
+- Manage Goals screen with forward-only target edits; historical entries retain goal snapshots.
+- Separate contribution, Spend vs Save, card-payment, and Piggy Bank data per profile.
+- Piggy Bank can be toggled off per profile.
+- Import/export of all local app data.
+- Automatic migration of existing `littleTransfers.v2` data into Rachel's profile.
+- Check 1, Check 2, and optional Check 3 remain universal.
 
-## GitHub Pages update
-Upload/replace all files in the repository root and commit. The service worker cache version is bumped for v2.1. Existing `littleTransfers.v2` local data is preserved and extended in-place.
+## v3.1 — Dark Mode
+- Full dark palette based on the original Little Transfers colors.
+- Deep indigo/navy backgrounds, cream text, coral/aqua/plum accents.
+- Dark styling across profile selection, dashboard, goals, Piggy Bank, Spend vs Save, setup, and peek mode.
+- Theme toggle in profile setup.
+
+## Existing v2.1 behavior retained
+- Piggy Bank has a planned target of $0 and never reduces “left to transfer this month.”
+- Optional “intended for” notes group across months as delayed-gratification history.
+- Piggy withdrawals reduce the Piggy balance without erasing historical saving credit.
+- Spend vs Save compares current-income card spending (`card paid - Piggy-funded spending`) against new GOAL contributions; BILLS are excluded.
+
+## Install / update on GitHub Pages
+Upload the contents of this folder to the repository root, replacing the old files. Be sure to replace `sw.js` so the cache updates to v3.1. Keep the same GitHub Pages URL to preserve browser-local data.
 
 ## Data
-All financial activity remains in browser localStorage on the device. Clearing Safari website data can erase it.
+All data remains in browser `localStorage`. Export a backup from Setup before clearing Safari website data or moving devices.
