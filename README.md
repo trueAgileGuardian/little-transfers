@@ -1,18 +1,16 @@
-# Little Transfers v2
+# Little Transfers v2.1
 
-A phone-first transfer habit tracker.
+A phone-first local PWA for tracking manual transfers, mandatory bills, savings goals, credit-card payments, and delayed-gratification Piggy Bank savings.
 
-## V2 changes
-- Separates mandatory **BILLS** (Bills, Car loan, Insurance, Phone) from discretionary **GOALS** (House, Family, Travel, Piggy Bank).
-- Adds **Piggy Bank** as a flexible future-spending savings bucket with no required target.
-- Adds a second **Spend vs Save** page.
-- Credit-card payments are entered as actual custom amounts per paycheck.
-- Spend vs Save compares credit-card payments against GOALS only; mandatory bills are excluded.
-- Replaces “planned baseline” wording with “left to transfer this month.”
-- Keeps Check 1 / Check 2 and optional Check 3 behavior.
-- Migrates existing v1 browser data automatically when opened on the same GitHub Pages URL.
+## v2.1 highlights
+- Piggy Bank has a planned target of $0, so its contributions never reduce “left to transfer this month” or advance the planned-transfer progress bar.
+- Optional “intended for” labels on Piggy Bank contributions group across months while the money remains one flexible balance.
+- Piggy Bank spending/withdrawals reduce the available Piggy balance without erasing historical savings credit.
+- Spend vs Save treats Piggy withdrawals as a funding source: card paid minus Piggy-funded spending = current-income spending, compared against new GOAL contributions.
+- BILLS remain excluded from the Spend vs Save comparison.
 
-## Updating GitHub Pages
-Upload/replace `index.html`, `manifest.webmanifest`, `sw.js`, `icon-192.png`, `icon-512.png`, and `README.md` in the repository root. Keep the same GitHub Pages URL so the browser can retain and migrate the existing local data.
+## GitHub Pages update
+Upload/replace all files in the repository root and commit. The service worker cache version is bumped for v2.1. Existing `littleTransfers.v2` local data is preserved and extended in-place.
 
-Data is still stored locally in the browser. Clearing Safari website data can erase it.
+## Data
+All financial activity remains in browser localStorage on the device. Clearing Safari website data can erase it.
